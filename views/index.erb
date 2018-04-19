@@ -1,0 +1,33 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>班分け君</title>
+</head>
+<body>
+  <h1>班分け君</h1>
+  <form action="number" method="POST">
+    <div>
+      班(長)の数:<input type="text" name="team_number" value="">
+      <input type="submit" value="OK">
+    </div>
+  </form>
+  <% if @team_number != nil %>
+    <form action="lottery" method="POST">
+      <div><input type="hidden" name="team_number" value=<%= @team_number %> ></div>
+      <% @team_number.to_i.times { |i| %>
+          <% reader = "reader"+i.to_s %>
+          <div>班長<%=p i+1 %>:<input type="text" name="reader[]" value=""></div>
+      <% } %>
+      <p>班分け対象(くじの数)の合計:<input type="text" name="sum" value=""></p>
+      <div>1年生の数:<input type="text" name="grade[]" value=""></div>
+      <div>2年生の数:<input type="text" name="grade[]" value=""></div>
+      <div>3年生の数:<input type="text" name="grade[]" value=""></div>
+      <div>4年生の数:<input type="text" name="grade[]" value=""></div>
+
+      <p><input type="submit" value="OK"></p>
+    </form>
+  <% else %>
+      <p>班の数を決めてください！
+  <% end %>
+</body>
+</html>
