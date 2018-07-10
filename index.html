@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang=ja>
+<head>
+  <meta charset="UTF-8">
+  <title>班分け君</title>
+  <script>
+    var lottery = [];
+    var leaders = [];
+    function number() {
+      let nameform = document.getElementById("nameform");
+      let form = document.createElement("form")
+      nameform.appendChild(form); //formの動的作成
+      let number = document.getElementById("team_number").value; //チームの数
+      let btn = document.getElementById("btn").disabled = true;
+      // console.log(number);
+      for ( let i = 0; i < number; i++ ) {
+        let index = i+1;
+        let pp = document.createElement("div");
+        pp.innerHTML = index + "番目の班長：";
+        let leader = document.createElement("input");
+        leader.type = "text";
+        leader.id = "leader"+i;
+        nameform.appendChild(pp);
+        nameform.appendChild(leader);
+      }
+      let stbtn = document.getElementById("start");
+      stbtn.innerHTML = '<button type="submit" id="stbtn" onclick="start()">この設定でくじを開始する</button>'
+    }
+
+    function start() {
+      let number = document.getElementById("team_number").value;
+      let sum = document.getElementById("sum").value;
+      for (var i = 0; i < number; i++) {
+        let leader = document.getElementById("leader"+i).value;
+        leaders.push(leader);
+      }
+      let lottery_all = [];
+      for (var i = 0; i < sum; i++) {
+        lottery_all.push((i%number) + 1);
+      }
+      let before = 0;
+      for (var i = 0; i < 4; i++) {
+        let index = i+1;
+        let tmp = parseInt(document.getElementById("grade"+index).value);
+        lottery.push(lottery_all.slice(before, before+tmp));
+        before = tmp+before;
+      }
+      let all = document.body;
+      all.innerHTML = '<h1>班分け君</h1><div id="nbody"></div><div id="result"></div>'
+      let new_body = document.getElementById("nbody");
+      for (var i = 0; i < 4; i++) {
+        let index = i+1;
+        let exec = "execute_lottery("+i+")";
+        let generate = '<input type="submit" value="' + index + ' 年" id="' + i + '" onclick='+exec+'> '
+        new_body.insertAdjacentHTML('beforeend', generate);
+      }
+    }
+
+    function execute_lottery(target) {
+      let result_number = Math.floor( Math.random() * lottery[target].length );
+      let result_str = "あなたは、第" + lottery[target][result_number] + "班(" + leaders[lottery[target][result_number]-1] + ")です。<br>"
+      if (lottery[target].length == 0) {
+        result_str = "もうくじがないよ！<br>";
+      }
+      lottery[target].splice(result_number, 1);
+      console.log(lottery[target]);
+      let result = document.getElementById("result");
+      result.insertAdjacentHTML('afterbegin', result_str);
+    }
+  </script>
+</head>
+<body>
+  <h1>班分け君</h1>
+  <div>
+    班(長)の数:<input type="text" id="team_number" value="">
+    <input type="submit" value="OK" id="btn" onclick="number()">
+  </div>
+  <div id="nameform"></div>
+  <p>くじの合計：<input type="text" id="sum"></p>
+  <p>1年生の数:<input type="text" id="grade1"></p>
+  <p>2年生の数:<input type="text" id="grade2"></p>
+  <p>3年生の数:<input type="text" id="grade3"></p>
+  <p>4年生の数:<input type="text" id="grade4"></p>
+  <div id="start">班の数を設定してください！</div>
+</body>
+</html>
